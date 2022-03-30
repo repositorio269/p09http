@@ -1,14 +1,46 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import { getClientes } from '../services/Clientes';
+import { getClientes, searchClientes } from '../services/Clientes';
 
 export default function DashboardClientes() {
 
   const [clientes, setClientes] = useState([]);
+  const [values, setValues] = useState({
+    term: ''
+  })
+  const [isLoading, setIsLoading] = useState(false);
+
+  // useEffect(() => {
+  //   getClientes()
+  //     .then(resp => {
+  //       //
+  //       setClientes(resp.data.clientes);
+  //     })
+  //     .catch(err => {
+  //       //
+  //       console.log(err);
+  //     })
+    
+  // }, [])
+
+  const handleOnChange = e => {
+    setValues({term: e.target.value})
+  }
 
   useEffect(() => {
-    setClientes(getClientes());
-  }, [clientes])
+    if(values.term.length > 0) {
+      setIsLoading(true);
+      searchClientes(values.term)
+        .then(resp => {
+          setIsLoading(false);
+          setClientes(resp.data.clientes);
+        })
+        .catch(err => {
+          setIsLoading(false);
+          console.log(err); // Consumiríamos en un "toast" o similar
+        })
+    }
+  }, [values.term])
 
   return (
     <div className='container'>
@@ -16,6 +48,13 @@ export default function DashboardClientes() {
       <Link to="/ventas/crear-cliente">
         <button>Crear cliente</button>
       </Link>
+      <div className="row">
+        <form>
+          <input type="search" 
+                 value={values.term}
+                 onChange={handleOnChange}/>
+        </form>
+      </div>
       <table>
         <thead>
           <tr>
@@ -24,18 +63,24 @@ export default function DashboardClientes() {
           </tr>
         </thead>
         <tbody>
-          {clientes.map(cliente => {
-            return (
-              <tr key={cliente.cif}>
-                <td>{cliente.nombre}</td>
-                <td>
-                  <Link to={`/ventas/editar-cliente/${cliente.cif}`}>
-                    Visualizar
-                  </Link>
-                </td>
-              </tr>
-            )
-          })}
+          {isLoading ? 
+              <tr><td style={{textAlign: 'center'}} colSpan={2}>Cargando...</td></tr> 
+            :
+              clientes.map(cliente => {
+                return (
+                  <>
+                        <tr key={cliente._id}>
+                          <td>{cliente.nombre}</td>
+                          <td>
+                            <Link to={`/ventas/editar-cliente/${cliente.cif}`}>
+                              Visualizar
+                            </Link>
+                          </td>
+                        </tr>
+                  </>
+                )
+              })
+          }
         </tbody>
       </table>
     </div>
