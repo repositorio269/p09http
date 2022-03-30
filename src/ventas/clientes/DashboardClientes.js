@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import useDebounce from '../../hooks/useDebounce';
 import { getClientes, searchClientes } from '../services/Clientes';
 
 export default function DashboardClientes() {
@@ -9,6 +10,7 @@ export default function DashboardClientes() {
     term: ''
   })
   const [isLoading, setIsLoading] = useState(false);
+  const {debounceValue} = useDebounce(values.term, 500);
 
   // useEffect(() => {
   //   getClientes()
@@ -28,9 +30,9 @@ export default function DashboardClientes() {
   }
 
   useEffect(() => {
-    if(values.term.length > 0) {
+    if(debounceValue.length > 0) {
       setIsLoading(true);
-      searchClientes(values.term)
+      searchClientes(debounceValue)
         .then(resp => {
           setIsLoading(false);
           setClientes(resp.data.clientes);
@@ -40,7 +42,7 @@ export default function DashboardClientes() {
           console.log(err); // Consumiríamos en un "toast" o similar
         })
     }
-  }, [values.term])
+  }, [debounceValue])
 
   return (
     <div className='container'>
