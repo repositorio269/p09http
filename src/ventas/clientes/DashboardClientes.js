@@ -41,6 +41,8 @@ export default function DashboardClientes() {
           setIsLoading(false);
           console.log(err); // Consumiríamos en un "toast" o similar
         })
+    } else {
+      setClientes([]);
     }
   }, [debounceValue])
 

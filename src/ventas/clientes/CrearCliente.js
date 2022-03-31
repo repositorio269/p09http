@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { setCliente } from '../services/Clientes'
+import FormCliente from '../components/FormCliente';
+import { postCliente } from '../services/Clientes';
 
 export default function CrearCliente() {
 
   const [values, setValues] = useState({
     nombre: '',
-    cif: '',
+    actividades: '',
+    direccion: '',
     localidad: ''
   })
 
@@ -21,8 +23,15 @@ export default function CrearCliente() {
 
   const handleOnSubmit = e => {
     e.preventDefault();
-    setCliente(values);
-    navigate('/ventas/dashboard-clientes'); // Navegación programática
+    postCliente(values)
+          .then(res => {
+            console.log(res.data.message);
+            navigate('/ventas/dashboard-clientes');
+          })
+          .catch(err => {
+            // manejaríamos el error
+            console.log(err)
+          })
   }
 
   return (
@@ -31,33 +40,8 @@ export default function CrearCliente() {
         <div className="col-100">
           <h1>Crear cliente</h1>
           <form onSubmit={handleOnSubmit}>
-            <div className="row">
-              <div className="col-100">
-                <label>Nombre</label>
-                <input type="text" 
-                       value={values.nombre}
-                       name="nombre"
-                       onChange={handleOnChange}/>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-100">
-                <label>CIF</label>
-                <input type="text" 
-                       value={values.cif}
-                       name="cif"
-                       onChange={handleOnChange}/>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-100">
-                <label>Localidad</label>
-                <input type="text" 
-                       value={values.localidad}
-                       name="localidad"
-                       onChange={handleOnChange}/>
-              </div>
-            </div>
+            <FormCliente values={values}
+                         handleOnChange={handleOnChange}/>
             <div className="row end">
               <Link to="/ventas/dashboard-clientes">
                 <button type="button" className="outline">Cancelar</button>
