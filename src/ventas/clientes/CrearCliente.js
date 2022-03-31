@@ -41,6 +41,7 @@ export default function CrearCliente() {
           <h1>Crear cliente</h1>
           <form onSubmit={handleOnSubmit}>
             <FormCliente values={values}
+                          isEditionMode={true}
                          handleOnChange={handleOnChange}/>
             <div className="row end">
               <Link to="/ventas/dashboard-clientes">

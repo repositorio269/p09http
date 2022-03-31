@@ -10,7 +10,7 @@ export default function InicioVentas() {
         <Route path="/" element={<Outlet />}> {/* "basepath" que en este caso equivale a "ventas"*/}
             <Route index element={<InicioVentasLayout />} />
             <Route path="dashboard-clientes" element={<DashboardClientes />}/>
-            <Route path="editar-cliente/:cif" element={<EditarCliente />} />
+            <Route path="editar-cliente/:_id" element={<EditarCliente />} />
             <Route path="crear-cliente" element={<CrearCliente />} />
             <Route path="*" element={<div className='container'><h1>404</h1></div>}/>
         </Route>
