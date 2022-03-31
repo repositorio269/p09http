@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import useDebounce from '../../hooks/useDebounce';
-import { getClientes, searchClientes } from '../services/Clientes';
+import { deleteCliente, getClientes, searchClientes } from '../services/Clientes';
 
 export default function DashboardClientes() {
 
@@ -46,6 +46,18 @@ export default function DashboardClientes() {
     }
   }, [debounceValue])
 
+  const handleDeleteCliente = _id => {
+    deleteCliente(_id)
+          .then(res => {
+            setClientes([]);
+            console.log(res.data.message);
+          })
+          .catch(err => {
+            //...
+            console.log(err);
+          })
+  }
+
   return (
     <div className='container'>
       <h1>Clientes</h1>
@@ -64,6 +76,7 @@ export default function DashboardClientes() {
           <tr>
             <th>Nombre</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -80,6 +93,7 @@ export default function DashboardClientes() {
                               Visualizar
                             </Link>
                           </td>
+                          <td onClick={() => handleDeleteCliente(cliente._id)}>Eliminar</td> {/* No usar en producción :) */}
                         </tr>
                   </>
                 )
